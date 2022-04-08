@@ -1,0 +1,59 @@
+00001764 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 08/01/2021 19:16:05
+
+00000000                             1  ; =============================================================================
+00000000                             2  ; TITLE    : GAME CONSTANTS
+00000000                             3  ; AUTHOR   : ANTONI BURGUERA
+00000000                             4  ; HISTORY  : 12-OCTOBER-2020 - CREATION
+00000000                             5  ; =============================================================================
+00000000                             6  
+00000000                             7  ; --- PAD RELATED CONSTANTS ---------------------------------------------------
+00000000                             8  
+00000000  =00000032                  9  PADWIDTH    EQU     50                      ; PAD WIDTH
+00000000  =0000000A                 10  PADHEIGH    EQU     10                      ; PAD HEIGHT
+00000000  =00FFFFFF                 11  PADPCOL     EQU     $00FFFFFF               ; PEN COLOR
+00000000  =00000000                 12  PADFCOL     EQU     $00000000               ; FILL COLOR
+Line 13 ERROR: Undefined symbol
+00000000                            13  PADY        EQU     SCRHEIGH-PADHEIGH-PADHEIGH/2 ; PAD Y COORDINATE
+00000000  =00000008                 14  PADSPEED    EQU     8                       ; PAD SPEED
+00000000                            15  
+00000000                            16  ; --- BALL RELATED CONSTANTS --------------------------------------------------
+00000000                            17  
+00000000  =00000001                 18  BALNUM      EQU     1                      ; INITIAL NUMBER OF BALL AGENTS
+00000000  =00000001                 19  BALID       EQU     1                       ; BALL IDENTIFIER
+00000000  =00000005                 20  BALRAD      EQU     5                      ; BALL RADIUS
+00000000  =0000FF00                 21  BALPCOL     EQU     $0000FF00               ; PEN COLOR
+00000000  =00003300                 22  BALFCOL     EQU     $00003300               ; FILL COLOR
+00000000  =00000005                 23  BALSPEED    EQU     5                       ; BALL REFERENCE SPEED
+00000000                            24  
+00000000                            25  ; --- STATE RELATED VARIABLES -------------------------------------------------
+00000000                            26  
+00000000  =00000000                 27  STAINTRO    EQU     0                       ; GAME INTRO SCREEN STATE
+00000000  =00000001                 28  STAGAME     EQU     1                       ; GAME STATE
+00000000  =00000002                 29  STAGOVER    EQU     2                       ; GAME OVER STATE
+00000000                            30  
+00000000                            31  
+Line 32 WARNING: END directive missing, starting address not set
+
+1 error detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BALFCOL             3300
+BALID               1
+BALNUM              1
+BALPCOL             FF00
+BALRAD              5
+BALSPEED            5
+PADFCOL             0
+PADHEIGH            A
+PADPCOL             FFFFFF
+PADSPEED            8
+PADWIDTH            32
+STAGAME             1
+STAGOVER            2
+STAINTRO            0

@@ -1,0 +1,104 @@
+00002102 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 17/01/2021 18:14:58
+
+00000000                             1  ; =============================================================================
+00000000                             2  ; TITLE    : FILE MANAGEMENT
+00000000                             3  ; AUTHOR   : MIQUEL ROBLES
+00000000                             4  ; HISTORY  : 16-12-2020 - CREATION
+00000000                             5  ;            17-01-2021 - LAST MODIFICATION  
+00000000                             6  ; =============================================================================
+00000000                             7  
+00000000                             8  ; -----------------------------------------------------------------------------
+00000000                             9  READFILE
+00000000                            10  ; READS A FILE
+00000000                            11  ; INPUT    - NONE
+00000000                            12  ; OUTPUT   - NONE
+00000000                            13  ; MODIFIES - NONE
+00000000                            14  ; -----------------------------------------------------------------------------
+00000000  48A7 E0C0                 15              MOVEM.W D0-D2/A0-A1,-(A7)
+00000004                            16              
+00000004                            17              ; CLOSE ALL FILES JUST IN CASE (RECOMMENDED BY EASY68K)
+00000004  103C 0032                 18              MOVE.B  #50,D0
+00000008  4E4F                      19              TRAP    #15
+0000000A                            20  
+0000000A                            21              ; OPEN FILE
+0000000A  43F9 00000044             22              LEA     .FILENAME,A1
+00000010  103C 0033                 23              MOVE.B  #51,D0
+00000014  4E4F                      24              TRAP    #15
+00000016                            25  
+00000016                            26              ; READ THE FILE
+Line 27 ERROR: Undefined symbol
+00000016  43F9 004DBD16             27              LEA     FILEDATA,A1
+Line 28 ERROR: Undefined symbol
+0000001C  243C 004DBD16             28              MOVE.L  #READSIZE,D2
+00000022  103C 0035                 29  .READLOOP   MOVE.B  #53,D0
+00000026  4E4F                      30              TRAP    #15                     ; READ "READSIZE" BYTES
+Line 31 ERROR: Undefined symbol
+00000028  D3FC 004DBD16             31              ADD.L   #READSIZE,A1            ; INCREASE POINTER FOR FURTHER READS
+Line 32 ERROR: Undefined symbol
+0000002E  D579 005455B8             32              ADD.W   D2,(SIZE)
+00000034  4A40                      33              TST.W   D0                      ; IS IT EOF?
+00000036  67EA                      34              BEQ     .READLOOP               ; NO: READ MORE
+00000038                            35  
+00000038                            36              ; CLOSE THE FILE
+00000038  103C 0038                 37              MOVE.B  #56,D0
+0000003C  4E4F                      38              TRAP    #15
+0000003E                            39              
+0000003E  4C9F 0307                 40              MOVEM.W (A7)+,D0-D2/A0-A1
+00000042  4E75                      41              RTS
+00000044                            42  
+00000044= 50 55 4E 54 55 41 ...     43  .FILENAME   DC.B    'PUNTUACIO.TXT',0
+00000052                            44              DS.W    0
+00000052                            45              
+00000052                            46  ; -----------------------------------------------------------------------------
+00000052                            47  WRITEFILE
+00000052                            48  ; WRITES A FILE
+00000052                            49  ; INPUT    - NONE
+00000052                            50  ; OUTPUT   - NONE
+00000052                            51  ; MODIFIES - NONE
+00000052                            52  ; -----------------------------------------------------------------------------           
+00000052  48A7 E0C0                 53              MOVEM.W D0-D2/A0-A1,-(A7)
+00000056                            54              
+00000056                            55              ; OPEN FILE
+00000056  43F9 00000088             56              LEA     .FILENAME,A1
+0000005C  103C 0033                 57              MOVE.B  #51,D0
+00000060  4E4F                      58              TRAP    #15
+00000062                            59              
+00000062                            60              ; POSITION FILE
+Line 61 ERROR: Undefined symbol
+00000062  3439 004DBD16             61              MOVE.W  (SIZE),D2
+00000068  103C 0037                 62              MOVE.B  #55,D0
+0000006C  4E4F                      63              TRAP    #15
+0000006E                            64              
+0000006E                            65              ; WRITE FILE
+Line 66 ERROR: Undefined symbol
+0000006E  43F9 004DBD16             66              LEA     POINTS,A1
+00000074  7402                      67              MOVE.L  #2,D2
+00000076  103C 0036                 68              MOVE.B  #54,D0
+0000007A  4E4F                      69              TRAP    #15
+0000007C                            70              
+0000007C                            71              ; CLOSE THE FILE
+0000007C  103C 0038                 72              MOVE.B  #56,D0
+00000080  4E4F                      73              TRAP    #15
+00000082                            74              
+00000082  4C9F 0307                 75              MOVEM.W (A7)+,D0-D2/A0-A1
+00000086  4E75                      76              RTS
+00000088                            77  
+00000088= 50 55 4E 54 55 41 ...     78  .FILENAME   DC.B    'PUNTUACIO.TXT',0
+00000096                            79              DS.W    0 
+00000096                            80  
+Line 81 WARNING: END directive missing, starting address not set
+
+6 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+READFILE            0
+READFILE:FILENAME   44
+READFILE:READLOOP   22
+WRITEFILE           52
+WRITEFILE:FILENAME  88

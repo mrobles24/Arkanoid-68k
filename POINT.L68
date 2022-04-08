@@ -1,0 +1,99 @@
+00002102 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 17/01/2021 18:43:08
+
+00000000                             1  ; =============================================================================
+00000000                             2  ; TITLE    : POINT MANAGEMENT
+00000000                             3  ; AUTHOR   : MIQUEL ROBLES
+00000000                             4  ; COMMENTS :
+00000000                             5  ; HISTORY  : 11-01-2021 - CREATION
+00000000                             6  ;            15-01-2021 - LAST MODIFICATION  
+00000000                             7  ; =============================================================================
+00000000                             8  
+00000000                             9  ; -----------------------------------------------------------------------------
+00000000                            10  POINTINIT
+00000000                            11  ; INITIALIZE POINTS
+00000000                            12  ; INPUT    - NONE
+00000000                            13  ; OUTPUT   - NONE
+00000000                            14  ; MODIFIES - NONE
+00000000                            15  ; -----------------------------------------------------------------------------
+Line 16 ERROR: Undefined symbol
+00000000  23FC 00000000 005455C8    16              MOVE.L  #0,(POINTS)             ; INITIALIZE POINT COUNTER
+0000000A  4E75                      17              RTS
+0000000C                            18  
+0000000C                            19  ; -----------------------------------------------------------------------------
+0000000C                            20  POINTUPD
+0000000C                            21  ; UPDATE LIFE
+0000000C                            22  ; INPUT    - NONE
+0000000C                            23  ; OUTPUT   - NONE
+0000000C                            24  ; MODIFIES - NONE
+0000000C                            25  ; -----------------------------------------------------------------------------
+0000000C  48E7 C000                 26              MOVEM.L D0-D1,-(A7)             ; STACK REGISTERS
+Line 27 ERROR: Undefined symbol
+00000010  1039 004DBD16             27              MOVE.B  (SCRCYCCT),D0
+00000016  C03C 001F                 28              AND.B   #%0011111,D0
+0000001A  6600 0012                 29              BNE     .END
+Line 30 ERROR: Undefined symbol
+0000001E  3239 004DBD16             30              MOVE.W  (POINTS),D1             
+00000024  0641 000A                 31              ADD.W   #$A,D1                  ; ADD 10 POINTS EVERY SECOND
+Line 32 ERROR: Undefined symbol
+00000028  33C1 005455B8             32              MOVE.W  D1,(POINTS)
+0000002E  4CDF 0003                 33  .END        MOVEM.L (A7)+,D0-D1             ; UNSTACK REGISTERS
+00000032  4E75                      34              RTS
+00000034                            35  
+00000034                            36  ; -----------------------------------------------------------------------------
+00000034                            37  POINTPLOT
+00000034                            38  ; PLOT LIFE
+00000034                            39  ; INPUT    - NONE
+00000034                            40  ; OUTPUT   - NONE
+00000034                            41  ; MODIFIES - NONE
+00000034                            42  ; -----------------------------------------------------------------------------
+00000034  48E7 FEC0                 43              MOVEM.L D0-D6/A0-A1,-(A7)       ; STACK REGISTERS
+00000038                            44              
+00000038  223C 000000FF             45              MOVE.L  #$000000FF,D1           ; TEXT COLOR
+0000003E  243C 04080001             46              MOVE.L  #$04080001,D2           ; TEXT PROPERTIES
+00000044  103C 0015                 47              MOVE.B  #21,D0                  ; SET PROPERTIES
+00000048  4E4F                      48              TRAP    #15                     ; DO IT           
+0000004A  323C 0201                 49              MOVE.W  #((12-7)/2)<<8|1,D1     ; POINTS TEXT COORDINATES
+0000004E  103C 000B                 50              MOVE.B  #11,D0
+00000052  4E4F                      51              TRAP    #15                     ; LOCATE TEXT CURSOR
+00000054  43F9 00000094             52              LEA     .STR0,A1                ; STRING POINTER
+0000005A  103C 000D                 53              MOVE.B  #13,D0                  ; PRINT STRING TASK
+0000005E  4E4F                      54              TRAP    #15                     ; DO IT
+00000060                            55              
+00000060  223C 00FFFFFF             56              MOVE.L  #$00FFFFFF,D1           ; TEXT COLOR
+00000066  243C 04080001             57              MOVE.L  #$04080001,D2           ; TEXT PROPERTIES
+0000006C  103C 0015                 58              MOVE.B  #21,D0                  ; SET PROPERTIES
+00000070  4E4F                      59              TRAP    #15                     ; DO IT            
+00000072  323C 0A01                 60              MOVE.W  #((27-7)/2)<<8|1,D1     ; POINTS COORDINATES
+00000076  103C 000B                 61              MOVE.B  #11,D0
+0000007A  4E4F                      62              TRAP    #15                     ; LOCATE POINTS CURSOR
+0000007C  4281                      63              CLR.L   D1                      ; CLEAR POINTS REGISTER
+Line 64 ERROR: Undefined symbol
+0000007E  3239 004DBD16             64              MOVE.W  (POINTS),D1             ; MOVE POINTS TO REGISTER
+00000084  143C 000A                 65              MOVE.B  #10,D2                  ; DISPLAY IN DECIMAL BASE
+00000088  103C 000F                 66              MOVE.B  #15,D0                  ; PRINT UNSIGNED NMBR TASK
+0000008C  4E4F                      67              TRAP    #15                     ; DO IT           
+0000008E                            68                               
+0000008E  4CDF 037F                 69              MOVEM.L (A7)+,D0-D6/A0-A1       ; RECOVER STACKED REGISTERS
+00000092                            70              
+00000092  4E75                      71              RTS
+00000094                            72                          
+00000094= 504F 494E 5453 3...       73  .STR0       DC.W    'POINTS:',0
+0000009E                            74              DS.W    0
+0000009E                            75  
+0000009E                            76  
+Line 77 WARNING: END directive missing, starting address not set
+
+5 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+POINTINIT           0
+POINTPLOT           34
+POINTPLOT:STR0      94
+POINTUPD            C
+POINTUPD:END        2E

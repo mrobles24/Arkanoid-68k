@@ -1,0 +1,330 @@
+00001C04 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 13/01/2021 11:41:18
+
+00000000                             1  ; =============================================================================
+00000000                             2  ; TITLE    : BALL MANAGEMENT (AGENT)
+00000000                             3  ; AUTHOR   : MIQUEL ROBLES
+00000000                             4  ; COMMENTS : BALL AGENT LOCAL VARIABLES:
+00000000                             5  ;             (A0) : XCENTER - WORD
+00000000                             6  ;            2(A0) : YCENTER - WORD
+00000000                             7  ;            4(A0) : XSPEED  - WORD
+00000000                             8  ;            6(A0) : YSPEED  - WORD
+00000000                             9  ; HISTORY  : 20-12-2020 - CREATION
+00000000                            10  ; =============================================================================
+00000000                            11  
+00000000                            12  ; -----------------------------------------------------------------------------
+00000000                            13  BALINIT
+00000000                            14  ; INITIALIZE A BALL
+00000000                            15  ; INPUT    - NONE
+00000000                            16  ; OUTPUT   - NONE 
+00000000                            17  ; MODIFIES - NONE
+00000000                            18  ; -----------------------------------------------------------------------------
+00000000  48E7 8040                 19              MOVEM.L D0/A1,-(A7)             ; STACK REGISTERS
+Line 20 ERROR: Undefined symbol
+00000004  4EB9 004DBD16             20              JSR     RNDGET                  ; D0.L=RND(0,255)
+Line 21 ERROR: Comma expected
+0000000A                            21              ADD.W   #SCRWIDTH/2-127,D0      ; D0.W=RND(XC-127,XC+128)
+0000000A  3080                      22              MOVE.W  D0,(A0)                 ; XBALL=D0
+Line 23 ERROR: Undefined symbol
+0000000C  4EB9 004DBD16             23              JSR     RNDGET                  ; D0.L=RND(0,255)
+Line 24 ERROR: Comma expected
+00000012                            24              ADD.W   #SCRHEIGH/2-127,D0      ; D0.W=RND(YC-127,YC+128)
+00000012  3140 0002                 25              MOVE.W  D0,2(A0)                ; YBALL=D0
+00000016                            26              
+Line 27 ERROR: Undefined symbol
+00000016  4EB9 004DBD16             27              JSR     RNDGET                  ; DO.L=RND(0,255)
+0000001C  C0BC 0000000C             28              AND.L   #%00001100,D0           ; MASK D0
+00000022  43F9 0000003C             29              LEA     .SPEEDS,A1              ; GET VECTOR ADDRESS
+00000028  2171 0000 0004            30              MOVE.L  (A1,D0),4(A0)           ; INIT SPEEDS
+0000002E  4CDF 0201                 31              MOVEM.L (A7)+,D0/A1
+00000032  4E75                      32              RTS
+00000034                            33              
+Line 34 ERROR: Symbol value differs between first and second pass
+00000034=                           34  .SPEEDS     DC.W    BALSPEED,BALSPEED
+Line 35 ERROR: Undefined symbol
+00000034= F804 F804                 35              DC.W    BALSPEED,-BALSPEED
+Line 36 ERROR: Undefined symbol
+00000038= F804 F804                 36              DC.W    -BALSPEED,BALSPEED
+Line 37 ERROR: Undefined symbol
+0000003C= F804 F804                 37              DC.W    -BALSPEED,-BALSPEED
+00000040                            38  
+00000040                            39  ; -----------------------------------------------------------------------------
+Line 40 ERROR: Symbol value differs between first and second pass
+00000040                            40  BALUPD
+00000040                            41  ; UPDATE A BALL
+00000040                            42  ; INPUT    - NONE
+00000040                            43  ; OUTPUT   - NONE 
+00000040                            44  ; MODIFIES - NONE
+00000040                            45  ; -----------------------------------------------------------------------------
+00000040  48A7 E000                 46              MOVEM.W  D0-D2,-(A7)            ; STACK REGISTERS
+00000044  3010                      47              MOVE.W  (A0),D0
+00000046  D068 0004                 48              ADD.W   4(A0),D0
+0000004A  3080                      49              MOVE.W  D0,(A0)                 ; X:=X+VX
+0000004C  3028 0002                 50              MOVE.W  2(A0),D0
+00000050  D068 0006                 51              ADD.W   6(A0),D0
+00000054  3140 0002                 52              MOVE.W  D0,2(A0)                ; Y:=Y+VY
+00000058                            53              
+Line 54 ERROR: Undefined symbol
+00000058  0C50 BD16                 54              CMP.W   #BALRAD,(A0)            ; CHECK LEFT BOUNDARY
+0000005C  6D00 0182                 55              BLT     .BOUNCEL                ; IF COLLISION -> BOUNCE
+Line 56 ERROR: Comma expected
+00000060                            56              CMP.W   #SCRWIDTH-1-BALRAD,(A0) ; CHECK RIGHT BOUNDARY
+00000060  6E00 018C                 57              BGT     .BOUNCER                ; IF COLLISION -> BOUNCE
+00000064                            58              
+Line 59 ERROR: Symbol value differs between first and second pass
+00000064                            59  .CHKV       CMP.W   #SCRHEIGH/2-200-BALRAD,2(A0) ; CHECK TOP BOUNDARY
+00000064  6D00 0196                 60              BLT     .BOUNCET                ; IF COLLISION -> BOUNCE
+00000068                            61              
+00000068                            62              ; CHECK COLLISIONS WITH PAD
+00000068                            63  
+Line 64 ERROR: Symbol value differs between first and second pass
+00000068                            64  .COMPPAD    CMP.W   #PADY-PADHEIGH/2-BALRAD,2(A0)
+00000068  6F00 004E                 65              BLE     .COMPWALL
+0000006C                            66              
+Line 67 ERROR: Undefined symbol
+0000006C  3039 004DBD16             67              MOVE.W  (PADX),D0
+Line 68 ERROR: Comma expected
+00000072                            68              SUB.W   #PADWIDTH/2+BALRAD,D0
+00000072  B050                      69              CMP.W   (A0),D0
+00000074  6C00 015A                 70              BGE     .CHKKILL
+00000078                            71              
+Line 72 ERROR: Undefined symbol
+00000078  3039 004DBD16             72              MOVE.W  (PADX),D0
+Line 73 ERROR: Comma expected
+0000007E                            73              ADD.W   #PADWIDTH/2+BALRAD,D0
+0000007E  B050                      74              CMP.W   (A0),D0
+00000080  6F00 014E                 75              BLE     .CHKKILL
+00000084                            76  
+Line 77 ERROR: Comma expected
+00000084                            77              MOVE.W  #PADY-PADHEIGH/2-BALRAD,2(A0) ; ADJUST
+Line 78 ERROR: Undefined symbol
+00000084  317C BD16 0006            78              MOVE.W  #-BALSPEED,6(A0)        ; BOUNCE
+0000008A  6000 014E                 79              BRA     .END
+0000008E                            80              
+0000008E                            81              ; COLLISIONS WITH PAD CHECKED  
+0000008E                            82              
+0000008E                            83              ; CHECK COLLISIONS WITH WALL
+0000008E                            84  
+Line 85 ERROR: Symbol value differs between first and second pass
+0000008E                            85  .COMPWALL   MOVE.W  #35,D2
+Line 86 ERROR: Undefined symbol
+0000008E  43F9 004DBD16             86              LEA     XLIST,A1
+Line 87 ERROR: Undefined symbol
+00000094  45F9 004DBD16             87              LEA     YLIST,A2
+0000009A                            88              
+Line 89 ERROR: Symbol value differs between first and second pass
+0000009A                            89  .LOOPW      MOVE.W  (A1)+,(WALLX)
+Line 90 ERROR: Undefined symbol
+0000009A  33DA 005455B8             90              MOVE.W  (A2)+,(WALLY)                   
+000000A0                            91             
+000000A0                            92              ; WALL BOTTOM COLLISION
+Line 93 ERROR: Undefined symbol
+000000A0  3039 004DBD16             93              MOVE.W  (WALLY),D0
+Line 94 ERROR: Comma expected
+000000A6                            94              ADD.W   #WALLHEIGH/2+BALRAD,D0
+000000A6  323C 0000                 95              MOVE.W  #0,D1
+000000AA  B068 0002                 96              CMP.W   2(A0),D0
+000000AE  6C00 007C                 97              BGE     .CHECKX
+000000B2                            98              
+000000B2                            99              ; WALL TOP COLLISION
+Line 100 ERROR: Undefined symbol
+000000B2  3039 004DBD16            100              MOVE.W  (WALLY),D0
+Line 101 ERROR: Comma expected
+000000B8                           101              SUB.W   #WALLHEIGH/2+BALRAD,D0
+000000B8  323C 0001                102              MOVE.W  #1,D1
+000000BC  B068 0002                103              CMP.W   2(A0),D0
+000000C0  6C00 006A                104              BGE     .CHECKX 
+000000C4                           105  
+000000C4                           106              ; WALL RIGHT SIDE COLLISION
+Line 107 ERROR: Undefined symbol
+000000C4  3039 004DBD16            107              MOVE.W  (WALLX),D0
+Line 108 ERROR: Comma expected
+000000CA                           108              ADD.W   #WALLWIDTH/2+BALRAD,D0
+000000CA  323C 0002                109              MOVE.W  #2,D1
+000000CE  B050                     110              CMP.W   (A0),D0
+000000D0  6F00 007E                111              BLE     .CHECKY
+000000D4                           112              
+000000D4                           113              ; WALL LEFT SIDE COLLISION
+Line 114 ERROR: Undefined symbol
+000000D4  3039 004DBD16            114              MOVE.W  (WALLX),D0
+Line 115 ERROR: Comma expected
+000000DA                           115              SUB.W   #WALLWIDTH/2+BALRAD,D0
+000000DA  323C 0003                116              MOVE.W  #3,D1
+000000DE  B050                     117              CMP.W   (A0),D0
+000000E0  6C00 006E                118              BGE     .CHECKY
+000000E4  6000 00D2                119              BRA     .CHKWALL
+000000E8                           120              
+Line 121 ERROR: Symbol value differs between first and second pass
+000000E8                           121  .CHECKX       
+000000E8                           122              ; WALL X LEFT BOUNDARY
+Line 123 ERROR: Undefined symbol
+000000E8  3039 004DBD16            123              MOVE.W  (WALLX),D0
+Line 124 ERROR: Comma expected
+000000EE                           124              SUB.W   #WALLWIDTH/2+BALRAD,D0
+000000EE  B050                     125              CMP.W   (A0),D0
+000000F0  6C00 00C6                126              BGE     .CHKWALL           
+000000F4                           127              ; WALL X RIGHT BOUNDARY
+Line 128 ERROR: Undefined symbol
+000000F4  3039 004DBD16            128              MOVE.W  (WALLX),D0
+Line 129 ERROR: Comma expected
+000000FA                           129              ADD.W   #WALLWIDTH/2+BALRAD,D0
+000000FA  B050                     130              CMP.W   (A0),D0
+000000FC  6F00 00BA                131              BLE     .CHKWALL
+00000100  6000 0076                132              BRA     .BOUNCEW
+00000104                           133              
+Line 134 ERROR: Symbol value differs between first and second pass
+00000104                           134  .CHECKY
+00000104                           135              ; WALL Y BOTTOM BOUNDARY                        
+Line 136 ERROR: Undefined symbol
+00000104  3039 004DBD16            136              MOVE.W  (WALLY),D0
+Line 137 ERROR: Comma expected
+0000010A                           137              ADD.W   #WALLHEIGH/2+BALRAD,D0
+0000010A  B068 0002                138              CMP.W   2(A0),D0
+0000010E  6C00 00A8                139              BGE     .CHKWALL
+00000112                           140              ; WALL Y TOP BOUNDARY
+Line 141 ERROR: Undefined symbol
+00000112  3039 004DBD16            141              MOVE.W  (WALLY),D0
+Line 142 ERROR: Comma expected
+00000118                           142              SUB.W   #WALLHEIGH/2+BALRAD,D0
+00000118  B068 0002                143              CMP.W   2(A0),D0
+0000011C  6F00 009A                144              BLE     .CHKWALL
+00000120  6000 0056                145              BRA     .BOUNCEW 
+00000124                           146  
+00000124                           147              
+Line 148 ERROR: Symbol value differs between first and second pass
+00000124                           148  .BOUNCEW    CMP.W   #0,D1
+00000124  6700 0074                149              BEQ     .BOUNCEDOWN
+00000128  B27C 0001                150              CMP.W   #1,D1
+0000012C  6700 0076                151              BEQ     .BOUNCEUP
+00000130  B27C 0002                152              CMP.W   #2,D1
+00000134  6700 0078                153              BEQ     .BOUNCERGT
+00000138                           154              
+Line 155 ERROR: Symbol value differs between first and second pass
+00000138                           155  .BOUNCELFT  MOVE.   #-BALSPEED,4(A0)
+00000138  6000 00A0                156              BRA     .END      
+0000013C                           157  
+Line 158 ERROR: Symbol value differs between first and second pass
+0000013C                           158  .BOUNCEDOWN MOVE.W  #BALSPEED,6(A0)           
+0000013C  6000 009C                159              BRA     .END         
+00000140                           160              
+Line 161 ERROR: Symbol value differs between first and second pass
+00000140                           161  .BOUNCEUP   MOVE.W  #-BALSPEED,6(A0)
+00000140  6000 0098                162              BRA     .END
+00000144                           163  
+Line 164 ERROR: Symbol value differs between first and second pass
+00000144                           164  .BOUNCERGT  MOVE.   #BALSPEED,4(A0)
+00000144  6000 0094                165              BRA     .END      
+00000148                           166              
+Line 167 ERROR: Symbol value differs between first and second pass
+00000148                           167  .CHKWALL    DBRA    D2,.LOOPW
+Line 168 ERROR: Undefined symbol
+00000148  33FC 0000 005455B8       168              MOVE.W  #0,(WALLX)
+Line 169 ERROR: Undefined symbol
+00000150  33FC 0000 005455B8       169              MOVE.W  #0,(WALLY)
+00000158  6000 0076                170              BRA     .CHKKILL            
+0000015C                           171             
+0000015C                           172              ; WALL COLLISIONS CHECKED
+0000015C                           173  
+0000015C                           174              
+Line 175 ERROR: Symbol value differs between first and second pass
+0000015C                           175  .CHKKILL    CMP.W   #SCRHEIGH-1-BALRAD,2(A0) ; CHECK BOTTOM BOUNDARY
+0000015C  6E00 00AC                176              BGT     .BOUNCEB                ; IF COLLISION -> BOUNCE
+00000160                           177  
+Line 178 ERROR: Symbol value differs between first and second pass
+00000160  4C9F 0007                178  .END        MOVEM.W  (A7)+,D0-D2
+00000164  4E75                     179              RTS
+00000166                           180              
+Line 181 ERROR: Symbol value differs between first and second pass
+00000166                           181  .BOUNCEL    MOVE.W  #BALRAD,(A0)            ; ADJUST X
+Line 182 ERROR: Undefined symbol
+00000166  317C BD16 0004           182              MOVE.W  #BALSPEED,4(A0)         ; BOUNCE
+0000016C  6000 FF06                183              BRA     .CHKV   
+00000170                           184  
+Line 185 ERROR: Symbol value differs between first and second pass
+00000170                           185  .BOUNCER    MOVE.W  #SCRWIDTH-1-BALRAD,(A0) ; ADJUST X
+Line 186 ERROR: Undefined symbol
+00000170  317C BD16 0004           186              MOVE.   #-BALSPEED,4(A0)        ; BOUNCE
+00000176  6000 FEFC                187              BRA     .CHKV
+0000017A                           188  
+Line 189 ERROR: Symbol value differs between first and second pass
+0000017A                           189  .BOUNCET    MOVE.W  #SCRHEIGH/2-200-BALRAD,2(A0) ; ADJUST Y
+Line 190 ERROR: Undefined symbol
+0000017A  317C BD16 0006           190              MOVE.W  #BALSPEED,6(A0)         ; BOUNCE
+00000180  6058                     191              BRA     .END
+00000182                           192  
+Line 193 ERROR: Symbol value differs between first and second pass
+00000182                           193  .BOUNCEB    JSR     LIFEUPD
+Line 194 ERROR: Undefined symbol
+00000182  4EB9 004DBD16            194              JSR     AGLKILL
+00000188  6050                     195              BRA     .END
+0000018A                           196              
+0000018A                           197  ; -----------------------------------------------------------------------------
+Line 198 ERROR: Symbol value differs between first and second pass
+0000018A                           198  BALPLOT
+0000018A                           199  ; PLOT A BALL
+0000018A                           200  ; INPUT    - NONE
+0000018A                           201  ; OUTPUT   - NONE 
+0000018A                           202  ; MODIFIES - NONE
+0000018A                           203  ; -----------------------------------------------------------------------------
+0000018A  48E7 F800                204              MOVEM.L D0-D4,-(A7)             ; STACK REGISTERS
+0000018E  103C 0050                205              MOVE.B  #80,D0                  ; SET PEN COLOR TASK
+Line 206 ERROR: Undefined symbol
+00000192  223C 004DBD16            206              MOVE.L  #BALPCOL,D1             ; PEN COLOR
+00000198  4E4F                     207              TRAP    #15                     ; SET PEN COLOR
+0000019A  5200                     208              ADDQ.B  #1,D0                   ; SET FILL COLOR TASK
+Line 209 ERROR: Undefined symbol
+0000019C  223C 004DBD16            209              MOVE.L  #BALFCOL,D1             ; FILL COLOR
+000001A2  4E4F                     210              TRAP    #15                     ; SET FILL COLOR
+000001A4                           211              
+000001A4  3210                     212              MOVE.W  (A0),D1                 ; D1:=XCENTER
+000001A6  3428 0002                213              MOVE.W  2(A0),D2                ; D2:=YCENTER
+000001AA  3601                     214              MOVE.W  D1,D3                   ; D3:=XCENTER
+000001AC  3802                     215              MOVE.W  D2,D4                   ; D4:=YCENTER
+000001AE                           216              
+Line 217 ERROR: Undefined symbol
+000001AE  0441 BD16                217              SUB.W   #BALRAD,D1              ; D1:=XLEFT
+Line 218 ERROR: Undefined symbol
+000001B2  0442 BD16                218              SUB.W   #BALRAD,D2              ; D2:=YTOP
+Line 219 ERROR: Undefined symbol
+000001B6  0643 BD16                219              ADD.W   #BALRAD,D3              ; D3:=XRIGTH
+Line 220 ERROR: Undefined symbol
+000001BA  0644 BD16                220              ADD.W   #BALRAD,D4              ; D4:=YBOTTOM
+000001BE  103C 0058                221              MOVE.B  #88,D0                  ; DRAW ELLIPSE/CIRCLE TASK
+000001C2  4E4F                     222              TRAP    #15                     ; DO IT
+000001C4  4CDF 001F                223              MOVEM.L (A7)+,D0-D4
+000001C8  4E75                     224              RTS
+000001CA                           225              
+000001CA  4E75                     226              RTS
+000001CC                           227  
+Line 228 WARNING: END directive missing, starting address not set
+
+68 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BALINIT             0
+BALINIT:SPEEDS      3C
+BALPLOT             218
+BALUPD              4C
+BALUPD:BOUNCEB      20A
+BALUPD:BOUNCEDOWN   19A
+BALUPD:BOUNCEL      1E0
+BALUPD:BOUNCELFT    190
+BALUPD:BOUNCER      1EE
+BALUPD:BOUNCERGT    1AE
+BALUPD:BOUNCET      1FC
+BALUPD:BOUNCEUP     1A4
+BALUPD:BOUNCEW      178
+BALUPD:CHECKX       12C
+BALUPD:CHECKY       150
+BALUPD:CHKKILL      1D0
+BALUPD:CHKV         74
+BALUPD:CHKWALL      1B8
+BALUPD:COMPPAD      7E
+BALUPD:COMPWALL     B8
+BALUPD:END          1DA
+BALUPD:LOOPW        C8
